@@ -1,28 +1,47 @@
 import React from 'react';
-import './entry.css';
+import './listOfToDo.css';
+import {List} from "../list-of-entries/list";
 
-export class Entry extends React.Component {
+export class ListOfToDo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            textOfEntry: ''
+            textOfEntry: '',
+            items: []
         };
         this.handleClick = this.handleClick.bind(this);
         this.setTextOfEntry = this.setTextOfEntry.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
-    handleClick() {
-        console.log(this.state.textOfEntry);
+    handleClick(e) {
+        e.preventDefault();
+        this.setState({
+            textOfEntry: '',
+            items: [...this.state.items, this.state.textOfEntry]
+        });
+
     }
-    setTextOfEntry(e){
+
+    setTextOfEntry(e) {
         this.setState({textOfEntry: e.target.value});
     }
+
+    delete(index) {
+        this.setState(prevState => ({
+            items: prevState.items.filter(item => item !== index)
+        }));
+    }
+
     render() {
         return (
-            <div id="myDIV" className="header">
-                <input type="text" id="myInput" placeholder="Title..." onChange={this.setTextOfEntry}
-                       value={this.state.textOfEntry}/>
-                <span onClick={this.handleClick} className="addBtn">Add</span>
+            <div>
+                <div id="myDIV" className="header">
+                    <input type="text" id="myInput" placeholder="Title..." onChange={(e) => this.setTextOfEntry(e)}
+                           value={this.state.textOfEntry}/>
+                    <span onClick={(e) => this.handleClick(e)} className="addBtn">Add</span>
+                </div>
+                <List items={this.state.items} delete={this.delete}/>
             </div>);
     }
 }
